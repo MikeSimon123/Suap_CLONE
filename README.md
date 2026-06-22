@@ -1,4 +1,4 @@
-# gerenciador_de_notas
+# Gerenciador de Notas
 
 ## Por enquanto tem:
 * Banco de dados;
