@@ -21,6 +21,7 @@
             foreach($users as $usuario){
                 if($usuario["login"] == $dados["login"] && $usuario["senha"] == $dados["senha"]){
                     $_SESSION["login"] = $dados["login"];
+                    $_SESSION["func"] = $usuario["func"];
                     $_SESSION["id"] = $usuario["senha"];
                     $resposta = [
                         "status" => "sucesso"

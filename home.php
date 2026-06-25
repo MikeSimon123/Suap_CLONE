@@ -15,7 +15,14 @@
 <body>
     <h1>Bem vindo(a) ao sistema, <?php echo $_SESSION["login"]?>!</h1>
     <input type="button" value="Sair" onclick="sair()">
-
+    <?php
+        if($_SESSION["func"] == "aluno"){
+            echo "<input type='button' value='Ver notas' onclick='notas()'>";
+        }
+        if($_SESSION["func"] == 'professor'){
+            echo "<input type='button' value='Gerenciador de notas' onclick='notas()'>";
+        }
+    ?>
     <script>
         function sair(){
             const dados = {
@@ -39,6 +46,9 @@
             .catch(error => {
                 alert("Erro: " + error);
             })
+        }
+        function notas(){
+            window.location = "notas.php";
         }
     </script>
 </body>
