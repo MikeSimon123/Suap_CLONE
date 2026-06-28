@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php
         session_start();
-        if($_SESSION["login"] != ""){
-            echo "<script>window.location = 'home.php'</script>";
+        if(array_key_exists("login", $_SESSION)){
+            if($_SESSION["login"] != ""){
+                echo "<script>window.location = 'home.php'</script>";
+            }
         }
     ?>
     <title>Página de Login</title>

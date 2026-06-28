@@ -13,7 +13,7 @@
     <title>Página Inicial</title>
 </head>
 <body>
-    <h1>Bem vindo(a) ao sistema, <?php echo $_SESSION["login"]?>!</h1>
+    <h1>Bem vindo(a) ao sistema, <?php echo $_SESSION["nomeC"]?>!</h1>
     <section id="menu_lateral">
         <?php
             include_once "php/menu.php";

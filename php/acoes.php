@@ -19,8 +19,9 @@
             $comando = $conexao->query("select * from usuarios");
             $users = $comando->fetchAll(PDO::FETCH_ASSOC);
             foreach($users as $usuario){
-                if($usuario["login"] == $dados["login"] && $usuario["senha"] == $dados["senha"]){
+                if($usuario["user"] == $dados["login"] && $usuario["senha"] == $dados["senha"]){
                     $_SESSION["login"] = $dados["login"];
+                    $_SESSION["nomeC"] = $usuario["nome"];
                     $_SESSION["func"] = $usuario["func"];
                     $_SESSION["id"] = $usuario["senha"];
                     $resposta = [
@@ -35,7 +36,26 @@
             }
         }
         if($dados["comando"] == "cadastrar"){
-            $comando = $conexao->query("insert into usuarios() values()"); //inserir
+            $nome = $dados["nome"];
+            $data = (string)$dados["data"];
+            $email = $dados["email"];
+            $tel = $dados["tel"];
+            $user = $dados["user"];
+            $senha = $dados["senha"];
+            try{
+                $comando = $conexao->query("insert into usuarios(
+            nome, data, email, tel, user, senha, func) values(
+            '$nome', '$data', '$email', '$tel', '$user', '$senha', 'aluno')"); //inserir
+                $resposta = [
+                    "status" => "sucesso"
+                ];
+            }catch(Exception $erro){
+                $resposta = [
+                    "status" => "falha",
+                    "erro" => "$erro"
+                ];
+            }
+            
         }
     }
     if(ob_get_length()){

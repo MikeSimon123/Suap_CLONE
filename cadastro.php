@@ -47,7 +47,7 @@
                 email: email.value,
                 tel: tel.value,
                 user: user.value,
-                senha: senha.value
+                senha: senha.value,
                 comando: "cadastrar"
             }
             fetch("php/acoes.php", {
@@ -64,6 +64,7 @@
                     window.location = "login.php";
                 } else if(dado["status"] == "falha"){
                     alert("Algo deu errado com seu cadastro... Tente novamente mais tarde!");
+                    alert("Erro: " + dado["erro"]);
                 }
             })
             .catch(erro => {
