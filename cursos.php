@@ -17,7 +17,7 @@
     <h1>Cursos</h1>
     <?php
     if($_SESSION["func"] == "aluno"){
-        echo "<input type='button' value='Cadastrar-se em uma turma'>";
+        echo "<input type='button' value='Cadastrar-se em uma turma' onclick='cadastrarse()'>";
     }
     if($_SESSION["func"] == "professor"){
         echo "<input type='button' value='Cadastre uma turma no sistema' onclick='cadastrar()'>";
@@ -33,13 +33,39 @@
             <input type="submit" value="Cadastrar turma">
         </form>
     </section>
+    <section id="cadastroAluno">
+        <h2>Cadastrar-se em uma turma</h2>
+        <select name="cxcurso" id="cursos">
+            <?php
+                try{
+                    include_once "php/connection.php";
+                    $comando = $conexao->query("select * from cursos");
+                    $cursos = $comando->fetchAll(PDO::FETCH_ASSOC);
+                    foreach($cursos as $curso){
+                        $nome = $curso["nome"];
+                        echo "<option value='$nome'>$nome</option>";
+                    }
+                }catch (Exception $error) {
+                    echo "<script>alert('Erro' . $error)</script>";
+                }
+                
+            ?>
+        </select>
+        <input type="submit" value="Cadastrar-se" id='cadAluno'>
+    </section>
     <script>
         const cadastroProf = document.getElementById("cadastroProf");
         const nomeCadastroProf = document.getElementById("nomeCadProf");
         const descCadastroProf = document.getElementById("desc");
+        const cadastroAluno = document.getElementById("cadastroAluno");
+        const cadAluno = document.getElementById("cadAluno");
         cadastroProf.style.display = "none";
+        cadastroAluno.style.display = "none";
         function cadastrar(){
             cadastroProf.style.display = "block";
+        }
+        function cadastrarse(){
+                cadastroAluno.style.display = "block"
         }
         cadastroProf.addEventListener("submit", e => {
             e.preventDefault();
@@ -63,7 +89,11 @@
                 else if(dado["status"] == "sucesso"){
                     alert('Turma cadastrada com sucesso!');
                 }
-                alert(dado["status"]);
+                else if(dado["status"] == "falha"){
+                    alert("ERRO: "+dado["erro"]);
+                } else if(dado["status"] == "funciona"){
+                    alert("funciona");
+                }
             })
             .catch(erro => {
                 alert('Erro:' + erro);
