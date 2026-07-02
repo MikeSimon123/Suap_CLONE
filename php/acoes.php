@@ -23,7 +23,7 @@
                     $_SESSION["login"] = $dados["login"];
                     $_SESSION["nomeC"] = $usuario["nome"];
                     $_SESSION["func"] = $usuario["func"];
-                    $_SESSION["id"] = $usuario["senha"];
+                    $_SESSION["id"] = $usuario["id"];
                     $resposta = [
                         "status" => "sucesso"
                     ];
@@ -80,10 +80,25 @@
                             nota2 JSON,
                             nota3 JSON,
                             nota4 JSON,
-                            mediaFinal float
+                            mediaFinal float,
+                            professor bool default false
                         )");
+                        $n = $_SESSION["nomeC"];
+                    $comando3 = $conexao->query("insert into $nomeTabela(nome, professor) values('$n', '1')");
                     $resposta = ["status" => "sucesso"];
                 }
+            }catch(Exception $erro){
+                $resposta = ["status" => "falha", "erro" => "$erro"];
+            }
+        }
+        if($dados["comando"] == "cadastrar-se"){
+            $curso = $dados["turma"] . "tb";
+            $nome = "";
+            try{
+                $id = $_SESSION["id"];
+                $nome = $_SESSION["nomeC"];
+                $comando = $conexao->query("insert into $curso(nome, identificacao) values('$nome', '$id')");
+                $resposta = ["status" => "sucesso"];
             }catch(Exception $erro){
                 $resposta = ["status" => "falha", "erro" => "$erro"];
             }
