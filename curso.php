@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php
+        include "php/verify.php";
+    ?>
+    <title><?php echo $_SESSION["turma"]?></title>
+</head>
+<body>
+    <section id="menu_lateral">
+        <?php
+            include_once "php/menu.php";
+        ?>
+    </section>
+    <h1><?php 
+        if(array_key_exists("turma", $_SESSION)){
+            echo $_SESSION["turma"];
+        } else {
+            echo "Não tem ";
+        }
+        ?>
+    </h1>
+</body>
+</html>

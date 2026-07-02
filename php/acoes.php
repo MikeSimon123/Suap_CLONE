@@ -103,6 +103,15 @@
                 $resposta = ["status" => "falha", "erro" => "$erro"];
             }
         }
+        if($dados["comando"] == "goCurso"){
+            try{
+                $curso = $dados["turma"];
+                $_SESSION["turma"] = $dados["turma"];
+                $resposta = ["status" => "sucesso"];
+            } catch(Exception $erro){
+                $resposta = ["status" => "falha", "erro" => "$erro"];
+            }   
+        }
     }
     if(ob_get_length()){
         ob_clean(); //necessário para limpar coisas de include e session

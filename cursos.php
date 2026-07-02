@@ -35,10 +35,11 @@
                 }
             }
             foreach($cursosListados as $cursoListado){
-                echo "CURSO:". $cursoListado . "<br>";
+                $nome = "$cursoListado";
+                echo "CURSO:". $cursoListado . "<input type='button' value='Entrar no curso' onclick='goCurso(`$cursoListado`)'>". "<br>";
             }
         }catch(Exception $erro){
-
+            echo "$erro";
         }
         echo "<input type='button' value='Cadastrar-se em uma turma' onclick='cadastrarse()'>";
     }
@@ -183,6 +184,7 @@
                 }
                 else if(dado["status"] == "sucesso"){
                     alert('Turma cadastrada com sucesso!');
+                    window.location = "cursos.php";
                 }
                 else if(dado["status"] == "falha"){
                     alert("ERRO: "+dado["erro"]);
@@ -195,6 +197,35 @@
             });
         })
         /* CADASTRAR TURMA */
+
+        /* ENTRAR NA TURMA*/
+        function goCurso(nome){
+            const dados = {
+                comando: "goCurso",
+                turma: nome
+            }
+            fetch("php/acoes.php", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => response.json())
+            .then(dado => {
+                if(dado["status"] == "sucesso"){
+                    alert("Entrando no curso");
+                    window.location = "curso.php";
+                } else if(dado["status"] == "falha"){
+                    alert("Não foi possível entrar no curso");
+                    alert("ERRO: "+dado["erro"]);
+                }
+            })
+            .catch(erro => {
+                alert("ERRO: "+erro);
+            })
+        }
+        /* ENTRAR NA TURMA */
     </script>
 </body>
 </html>
