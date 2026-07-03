@@ -38,60 +38,16 @@
             echo "<a href='materias.php'>Materiais</a>";
             echo "<a href='progresso.php'>Progresso</a>";
             echo "<h2>Atividades</h2>";
-            try{
-                require_once "php/connection.php";
-                $comando = $conexao->query("select * from cursos");
-                $cursos = $comando->fetchAll(PDO::FETCH_ASSOC);
-                $nomeTabela = "";
-                foreach($cursos as $curso){
-                    if($curso["nome"] == $_SESSION["turma"]){
-                        $nomeTabela = "atividades" . '$curso["nomeTratado"]' . "tb";
-                        break;
-                    }
-                }
-                $comando2 = $conexao->query("select * from $nomeTabela");
-                $atividades = $comando2->fetchAll(PDO::FETCH_ASSOC);
-                foreach($atividades as $atividade){
-                    echo "ATIVIDADE: " . $atividade["nome"];
-                }
-                if($atividades == []){
-                    echo "Nenhuma atividade";
-                }
-            } catch(Exception $erro){
-                echo "Erro: $erro";
-            }
         }
         if($_SESSION["func"] == "professor"){
             echo "<a href='atividades.php'>Atividades</a>";
             echo "<a href='materias.php'>Materiais</a>";
             echo "<a href='progresso.php'>Progresso</a>";
             echo "<h2>Atividades</h2>";
-            try{
-                require_once "php/connection.php";
-                $comando = $conexao->query("select * from cursos");
-                $cursos = $comando->fetchAll(PDO::FETCH_ASSOC);
-                $nomeTabela = "";
-                foreach($cursos as $curso){
-                    if($curso["nome"] == $_SESSION["turma"]){
-                        $nomeTabela = "atividades" . $curso["nomeTratado"] . "tb";
-                        break;
-                    }
-                }
-                $_SESSION["nomeTratado"] = $nomeTabela;
-                $comando2 = $conexao->query("select * from $nomeTabela");
-                $atividades = $comando2->fetchAll(PDO::FETCH_ASSOC);
-                foreach($atividades as $atividade){
-                    echo "ATIVIDADE: " . $atividade["nome"];
-                }
-                if($atividades == []){
-                    echo "Nenhuma atividade";
-                }
-            }   catch(Exception $erro){
-                echo "Erro: $erro";
-            }
-            echo "<input type='button' value='Criar Atividade' onclick=criarAtividade()>";
         }
     ?>
+    <section id='atividadesTabela'></section>
+    <?php if($_SESSION["func"] == "professor"){echo "<input type='button' value='Criar Atividade' onclick=criarAtividade()>";}?>
     <section id="criadorAtividade">
         <h2>Crie uma atividade</h2>
         <form action="" method="post" id='formCriadorAtividade'>
@@ -106,17 +62,48 @@
         const criadorAtividade = document.getElementById("criadorAtividade");
         const formCriadorAtividade = document.getElementById("formCriadorAtividade");
         const nomeAtividade = document.getElementById("nomeAtividade");
+        const atividadesTabela = document.getElementById("atividadesTabela");
         criadorAtividade.style.display = "none";
         function criarAtividade(){
             criadorAtividade.style.display = "block";
         }
+        function atualizarTabela(){
+            const dados = {
+                comando: "atualizarAtividades",
+                tabela: "<?php echo $_SESSION['nomeTratado']?>"
+            }
+            fetch("php/acoes.php", {
+                method:"post",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => response.json())
+            .then(dado => {
+                atividadesTabela.innerHTML = "";
+                if(dado["status"] == "falha"){
+                    atividadesTabela.innerHTMl += "<p>Não foi possível acessar as atividades</p>"
+                }
+                if(dado["status"] == "sucesso"){
+                    atividades = JSON.parse(dado["atividades"]);
+                    atividades.forEach(atividade => {
+                        atividadesTabela.innerHTML += "ATIVIDADE: " + atividade["nome"] + "<br>";
+                    });
+                    if(atividades == []){
+                        atividadesTabela.innerHTML += "Não existem atividades do curso ainda";
+                    }
+                }
+            })
+        }
+        atualizarTabela();
         formCriadorAtividade.addEventListener("submit", e => {
             e.preventDefault();
             if(nomeAtividade.value != ""){
                 const dados = {
                     comando: "criarAtividade",
                     nome: nomeAtividade.value,
-                    tabela: "atividades" + "<?php echo $_SESSION["nomeTratado"]?>" + "tb"
+                    tabela: "<?php echo $_SESSION['nomeTratado']?>"
                 }
                 fetch("php/acoes.php", {
                     method: "post",
@@ -129,7 +116,7 @@
                 .then(dado => {
                     if(dado["status"] == "sucesso"){
                         alert("Atividade criada com sucesso!");
-                        window.location = "atividades.php";
+                        atualizarTabela();
                     } else if(dado["status"] == "falha"){
                         alert("Falha na criação da atividade: "+dado["erro"]);
                     }
@@ -145,7 +132,7 @@
         /* Criador de Atividades*/
         window.addEventListener("pagehide", e => {
             const dados = {
-                    comando: "closeCurso"
+                comando: "closeCurso"
             }
             fetch("php/acoes.php", {
                 method: "post",

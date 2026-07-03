@@ -117,6 +117,7 @@
             try{
                 $curso = $dados["turma"];
                 $_SESSION["turma"] = $dados["turma"];
+                // colocar aqui $_SESSION["nomeTratado"] = "nomeTratado no banco";
                 $resposta = ["status" => "sucesso"];
             } catch(Exception $erro){
                 $resposta = ["status" => "falha", "erro" => "$erro"];
@@ -135,8 +136,22 @@
             try{
                 $nome = $dados["nome"];
                 $nomeTabela = $dados["tabela"];
-                $comando = $conexao->query("insert into $nomeTabela(nome) values($nome)");
+                $comando = $conexao->query("insert into $nomeTabela(nome) values('$nome')");
                 $resposta = ["status" => "sucesso"];
+            } catch(Exception $erro){
+                $resposta = ["status" => "falha", "erro" => "$erro"];
+            }
+        }
+        if($dados["comando"] == "atualizarAtividades"){
+            try {
+                $nomeTabela = $dados["tabela"];
+                $comando = $conexao->query("select * from $nomeTabela");
+                $atividades = $comando->fetchAll(PDO::FETCH_ASSOC);
+                $jsonAtividades = [];
+                foreach($atividades as $atividade){
+                    array_push($jsonAtividades, $atividade);
+                }
+                $resposta = ["status" => "sucesso", "atividades" => json_encode($jsonAtividades)];
             } catch(Exception $erro){
                 $resposta = ["status" => "falha", "erro" => "$erro"];
             }
