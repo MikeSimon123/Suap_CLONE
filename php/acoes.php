@@ -84,6 +84,15 @@
                             mediaFinal float,
                             professor bool default false
                         )");
+                    $nomeTabelaAtividades = "atividades" . $nomeTabela;
+                    $comando4 = $conexao->query("create table $nomeTabelaAtividades(
+                        id int auto_increment primary key,
+                        nome varchar(120),
+                        tipo varchar(30),
+                        config JSON,
+                        dataInicio date,
+                        dataFinal date
+                    )");
                         $n = $_SESSION["nomeC"];
                     $comando3 = $conexao->query("insert into $nomeTabela(nome, professor) values('$n', '1')");
                     $resposta = ["status" => "sucesso"];
@@ -121,6 +130,16 @@
                 $resposta = ["status" => "falha", "erro" => "$erro"];
             }
             
+        }
+        if($dados["comando"] == "criarAtividade"){
+            try{
+                $nome = $dados["nome"];
+                $nomeTabela = $dados["tabela"];
+                $comando = $conexao->query("insert into $nomeTabela(nome) values($nome)");
+                $resposta = ["status" => "sucesso"];
+            } catch(Exception $erro){
+                $resposta = ["status" => "falha", "erro" => "$erro"];
+            }
         }
     }
     if(ob_get_length()){

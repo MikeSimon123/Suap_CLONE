@@ -31,7 +31,13 @@
         }
         ?>
     </h1>
-
+    <?php 
+        if($_SESSION["func"] == "aluno" or $_SESSION["func"] == "professor"){
+            echo "<a href='atividades.php'>Atividades</a>";
+            echo "<a href='materias.php'>Materiais</a>";
+            echo "<a href='progresso.php'>Progresso</a>";
+        } 
+    ?>
     <script>
         window.addEventListener("pagehide", e => {
             const dados = {
