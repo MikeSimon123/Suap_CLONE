@@ -57,6 +57,21 @@
             <input type="submit" value="Criar Atividade">
         </form>
     </section>
+    <section id="editorAtividade">
+        <h2>Editor de Atividade</h2>
+        <p>Nome da atividade:</p>
+        <input type="text" name="cxnomeEditor" id="nomeEditor">
+        <section id="previa"></section>
+        <input type="button" value="Adicionar elemento à atividade" id='adElemento'>
+        <input type="button" value="Finalizar edição" id='finalizarEdicao'>
+    </section>
+    <section id="elemento">
+        <select name="cxtipo" id="elementoTipo">
+            <option value="multiescolha">Questão Múltipla Escolha</option>
+            <option value="textoescolha">Questão com Caixa de Texto</option>
+        </select>
+        <input type="button" value="Adicionar" onclick='adicionar()'>
+    </section>
     <script>
         /* Criador de Atividades*/
         const criadorAtividade = document.getElementById("criadorAtividade");
@@ -70,7 +85,7 @@
         function atualizarTabela(){
             const dados = {
                 comando: "atualizarAtividades",
-                tabela: "<?php echo $_SESSION['nomeTratado']?>"
+                tabela: "atividades" + "<?php echo $_SESSION['nomeTratado']?>" + "tb"
             }
             fetch("php/acoes.php", {
                 method:"post",
@@ -88,12 +103,15 @@
                 if(dado["status"] == "sucesso"){
                     atividades = JSON.parse(dado["atividades"]);
                     atividades.forEach(atividade => {
-                        atividadesTabela.innerHTML += "ATIVIDADE: " + atividade["nome"] + "<br>";
+                        atividadesTabela.innerHTML += "ATIVIDADE: " + atividade["nome"] + "<?php if($_SESSION["func"] == "professor"){echo "<input type='button' value='Editar' onclick='editarAtividade(`";}?>" + `${atividade["nome"]}` + "`)'>" + "<br>";
                     });
-                    if(atividades == []){
+                    if(atividadesTabela.innerHTML == ""){
                         atividadesTabela.innerHTML += "Não existem atividades do curso ainda";
                     }
                 }
+            })
+            .catch(erro => {
+                alert("erro:" + erro);
             })
         }
         atualizarTabela();
@@ -103,7 +121,7 @@
                 const dados = {
                     comando: "criarAtividade",
                     nome: nomeAtividade.value,
-                    tabela: "<?php echo $_SESSION['nomeTratado']?>"
+                    tabela: "atividades" + "<?php echo $_SESSION['nomeTratado']?>" + 'tb'
                 }
                 fetch("php/acoes.php", {
                     method: "post",
@@ -117,6 +135,7 @@
                     if(dado["status"] == "sucesso"){
                         alert("Atividade criada com sucesso!");
                         atualizarTabela();
+                        criadorAtividade.style.display = "none";
                     } else if(dado["status"] == "falha"){
                         alert("Falha na criação da atividade: "+dado["erro"]);
                     }
@@ -130,6 +149,30 @@
             }
         })
         /* Criador de Atividades*/
+
+        /* Editar atividade*/
+        const editorAtividade = document.getElementById("editorAtividade");
+        const adElemento = document.getElementById("adElemento");
+        const finalizarEdicao = document.getElementById("finalizarEdicao");
+        const elemento = document.getElementById("elemento");
+        const elementoTipo = document.getElementById("elementoTipo");
+        const elementos = [];
+        editorAtividade.style.display = "none";
+        elemento.style.display = "none";
+        function editarAtividade(nome){
+            editorAtividade.style.display = "block";
+        }
+        finalizarEdicao.addEventListener("click", e => {
+            editorAtividade.style.display = "none";
+        })
+        adElemento.addEventListener("click", e => {
+            elemento.style.display = "block";
+        })
+        function adicionar(){
+            elementos.push(elementoTipo.value);
+            elemento.style.display = "none";
+        }
+        /* Editar atividade*/
         window.addEventListener("pagehide", e => {
             const dados = {
                 comando: "closeCurso"

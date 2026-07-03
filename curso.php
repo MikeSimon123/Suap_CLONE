@@ -12,6 +12,18 @@
         } else if(array_key_exists("turma", $_SESSION)){
             if($_SESSION["turma"] == ""){
                 echo "<script>window.location = 'cursos.php'</script>";
+            } else {
+                try{
+                    require_once "php/connection.php";
+                    $nomeTurma = $_SESSION["turma"];
+                    $comando = $conexao->query("select nomeTratado from cursos where nome = '$nomeTurma'");
+                    $nomeTratado = $comando->fetch(PDO::FETCH_ASSOC);
+                    $nome = $nomeTratado["nomeTratado"];
+                    $_SESSION["nomeTratado"] = $nome;
+
+                } catch (Exception $erro){
+                    echo "<script>alert('Erro! Não foi possível encontrar o curso!'); alert(`$erro`);</script>";
+                }
             }
         }
     ?>
