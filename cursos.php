@@ -62,7 +62,7 @@
                 }
             }
             foreach($cursosListados as $cursoListado){
-                echo "CURSO:". $cursoListado . "<br>";
+                echo "CURSO:". $cursoListado . "<input type='button' value='Entrar no curso' onclick='goCurso(`$cursoListado`)'>" . "<br>";
             }
         }catch(Exception $erro){
             echo "Erro" . $erro;
