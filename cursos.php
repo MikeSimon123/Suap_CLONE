@@ -24,7 +24,7 @@
             $cursos = $comando->fetchAll(PDO::FETCH_ASSOC);
             $cursosListados = [];
             foreach($cursos as $curso){
-                $cursoNome = $curso["nome"] . "tb";
+                $cursoNome = $curso["nomeTratado"] . "tb";
                 $comando = $conexao->query("select * from $cursoNome");
                 $alunos = $comando->fetchAll(PDO::FETCH_ASSOC);
                 foreach($alunos as $aluno){
@@ -51,7 +51,7 @@
             $cursos = $comando->fetchAll(PDO::FETCH_ASSOC);
             $cursosListados = [];
             foreach($cursos as $curso){
-                $cursoNome = $curso["nome"] . "tb";
+                $cursoNome = $curso["nomeTratado"] . "tb";
                 $comando = $conexao->query("select * from $cursoNome");
                 $usuarios = $comando->fetchAll(PDO::FETCH_ASSOC);
                 foreach($usuarios as $usuario){
@@ -132,7 +132,7 @@
                 const dados = {
                     comando: "cadastrar-se",
                     id: <?php echo $_SESSION["id"];?>,
-                    turma: cursos.value
+                    turma: cursos.value.replaceAll(" ", "")
                 }
                 fetch("php/acoes.php", {
                     method: "post",
@@ -168,6 +168,7 @@
             const dados = {
                 comando: "cadastrar-turma",
                 nome: nomeCadastroProf.value,
+                nomeTratado: nomeCadastroProf.value.replaceAll(" ", ""),
                 desc: descCadastroProf.value
             }
             fetch("php/acoes.php", {

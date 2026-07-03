@@ -60,7 +60,8 @@
         if($dados["comando"] == "cadastrar-turma"){
             $nome = $dados["nome"];
             $desc = $dados["desc"];
-            $nomeTabela = $nome . "tb";            
+            $nomeTratado = $dados["nomeTratado"];
+            $nomeTabela = $nomeTratado . "tb";            
             try{
                 $comand = $conexao->query("select * from cursos");
                 $cursos = $comand->fetchAll(PDO::FETCH_ASSOC);
@@ -70,16 +71,16 @@
                     }
                 }
                 if($resposta["status"] != "falha-nome"){
-                    $comando = $conexao->query("insert into cursos(nome, descricao) values('$nome', '$desc')");
+                    $comando = $conexao->query("insert into cursos(nome, nomeTratado, descricao) values('$nome', '$nomeTratado', '$desc')");
                     $comando2 = $conexao->query("
                         create table $nomeTabela(
                             id int auto_increment primary key,
                             nome varchar(90),
                             identificacao int,
-                            nota1 JSON,
-                            nota2 JSON,
-                            nota3 JSON,
-                            nota4 JSON,
+                            nota1 float,
+                            nota2 float,
+                            nota3 float,
+                            nota4 float,
                             mediaFinal float,
                             professor bool default false
                         )");
@@ -111,6 +112,15 @@
             } catch(Exception $erro){
                 $resposta = ["status" => "falha", "erro" => "$erro"];
             }   
+        }
+        if($dados["comando"] == "closeCurso"){
+            try{
+                $_SESSION["turma"] = "";
+                $resposta = ["status" => "sucesso"];
+            } catch(Exception $erro){
+                $resposta = ["status" => "falha", "erro" => "$erro"];
+            }
+            
         }
     }
     if(ob_get_length()){

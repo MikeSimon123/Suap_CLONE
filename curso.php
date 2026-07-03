@@ -6,6 +6,15 @@
     <?php
         include "php/verify.php";
     ?>
+    <?php
+        if(!array_key_exists("turma", $_SESSION)){
+            echo "<script>window.location = 'cursos.php'</script>";
+        } else if(array_key_exists("turma", $_SESSION)){
+            if($_SESSION["turma"] == ""){
+                echo "<script>window.location = 'cursos.php'</script>";
+            }
+        }
+    ?>
     <title><?php echo $_SESSION["turma"]?></title>
 </head>
 <body>
@@ -22,5 +31,26 @@
         }
         ?>
     </h1>
+
+    <script>
+        window.addEventListener("pagehide", e => {
+            const dados = {
+                    comando: "closeCurso"
+            }
+            fetch("php/acoes.php", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => response.json())
+            .then(dado => {
+                if(dado["status"] != "sucesso"){
+                    window.location = "login.php";
+                }
+            })
+        })
+    </script>
 </body>
 </html>
